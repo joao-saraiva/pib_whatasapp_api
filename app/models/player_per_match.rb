@@ -1,12 +1,12 @@
 class PlayerPerMatch < ApplicationRecord
-  belong_to :player
-  belong_to :match
+  belongs_to :player
+  belongs_to :match
 
   validates :status, :position, presence: true
 
   before_create :set_position
 
-  enum stauts: { confirmed: 0, waiting: 1, gived_up: 2 }
+  enum status: { confirmed: 0, waiting: 1, gived_up: 2 }
 
   def on_waiting_list?
     position > 24
@@ -15,6 +15,6 @@ class PlayerPerMatch < ApplicationRecord
   private 
 
   def set_position
-    self.position = match.player_per_matches.size + 1
+    self.position = match.next_available_position(player)
   end
 end
