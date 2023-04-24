@@ -17,11 +17,11 @@ RSpec.describe "/player_per_matches", type: :request do
   # PlayerPerMatch. As you add validations to PlayerPerMatch, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
+    FactoryBot.attributes_for(:player_per_match)
   }
 
   let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
+    { player_id: nil }
   }
 
   # This should return the minimal set of values that should be in the headers
@@ -85,7 +85,7 @@ RSpec.describe "/player_per_matches", type: :request do
   describe "PATCH /update" do
     context "with valid parameters" do
       let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
+        { position: 2 }
       }
 
       it "updates the requested player_per_match" do
@@ -93,7 +93,7 @@ RSpec.describe "/player_per_matches", type: :request do
         patch player_per_match_url(player_per_match),
               params: { player_per_match: new_attributes }, headers: valid_headers, as: :json
         player_per_match.reload
-        skip("Add assertions for updated state")
+        expect(player_per_match.position).to eq(2)
       end
 
       it "renders a JSON response with the player_per_match" do

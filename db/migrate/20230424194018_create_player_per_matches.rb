@@ -4,6 +4,7 @@ class CreatePlayerPerMatches < ActiveRecord::Migration[7.0]
       t.integer :player_id
       t.integer :match_id
       t.integer :status
+      t.integer :position
 
       t.timestamps
     end

@@ -22,6 +22,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_24_195941) do
     t.integer "player_id"
     t.integer "match_id"
     t.integer "status"
+    t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
