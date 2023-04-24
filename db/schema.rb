@@ -10,10 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_24_171339) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_24_180022) do
   create_table "matches", force: :cascade do |t|
     t.integer "status"
     t.date "date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "players", force: :cascade do |t|
+    t.string "number"
+    t.string "name"
+    t.integer "player_friend_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
