@@ -90,4 +90,44 @@ RSpec.describe Match, type: :model do
       end
     end
   end
+
+  describe "#print_list_of_players" do
+    before(:each) do 
+      @match = FactoryBot.create(:match)
+    end
+
+    context "when has no player confirmed" do
+      context "when has no player at all" do 
+        it "should return a string saying that has no player" do 
+          expect(@match.print_list_of_players).to eq("Não existem jogadores confirmados.")
+        end
+      end
+
+      context "when has players but none of them are confirmed" do 
+        it "should return a string saying that has no player" do 
+          10.times do 
+            FactoryBot.create(:player_per_match, :waiting, match_id: @match.id)
+          end
+
+          expect(@match.print_list_of_players).to eq("Não existem jogadores confirmados.")
+        end
+      end
+    end
+
+    context "when has player confirmed" do
+      context "when has 5 players confirmed and 5 players gived_up" do 
+        it "should return a string only with players that are avaliable" do 
+          5.times do 
+            FactoryBot.create(:player_per_match, match_id: @match.id)
+          end
+
+          5.times do 
+            FactoryBot.create(:player_per_match, :gived_up, match_id: @match.id)
+          end
+          
+          expect(@match.print_list_of_players).to eq("Lista de Confirmados\n1 - Jeff\n2 - Jeff\n3 - Jeff\n4 - Jeff\n5 - Jeff\n")
+        end
+      end
+    end
+  end
 end

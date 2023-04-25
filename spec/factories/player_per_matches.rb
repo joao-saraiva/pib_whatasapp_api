@@ -13,5 +13,9 @@ FactoryBot.define do
     trait :waiting do 
       status { :waiting }
     end
+
+    trait :gived_up do 
+      status { :gived_up }
+    end
   end
 end

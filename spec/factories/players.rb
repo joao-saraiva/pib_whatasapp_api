@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :player do
     number { "MyString" }
-    name { "MyString" }
+    name { "Jeff" }
     pib_priority { false }
 
 
