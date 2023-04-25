@@ -1,9 +1,24 @@
 class Match < ApplicationRecord 
+  include AASM
   has_many :player_per_matches
 
   validates :status, :date, presence: true
 
   enum status: { open: 0, closed: 1, cancelled: 2 }
+
+  aasm column: 'status', enum: true do
+    state :open
+    state :closed
+    state :cancelled
+
+    event :cancel do 
+      transitions from: [:open, :closed], to: :cancelled
+
+      after do 
+        player_per_matches.destroy_all
+      end
+    end
+  end
 
   def next_available_position(player)
     if player.pib_priority?

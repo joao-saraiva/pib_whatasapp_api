@@ -130,4 +130,20 @@ RSpec.describe Match, type: :model do
       end
     end
   end
+
+  describe "#cancel!" do 
+    it "should change status of the match to cancelled and remove all players" do 
+      match = FactoryBot.create(:match)
+
+      5.times do 
+        FactoryBot.create(:player_per_match, match_id: match.id)
+      end
+
+      expect(match.open?).to eq(true)
+      expect(match.reload.player_per_matches.size).to eq(5)
+      match.cancel!
+      expect(match.cancelled?).to eq(true)
+      expect(match.reload.player_per_matches.size).to eq(0)
+    end
+  end
 end
