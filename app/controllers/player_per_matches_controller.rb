@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class PlayerPerMatchesController < ApplicationController
-  before_action :set_player_per_match, only: %i[ show update destroy ]
+  before_action :set_player_per_match, only: %i[show update destroy]
 
   # GET /player_per_matches
   def index
@@ -18,7 +20,8 @@ class PlayerPerMatchesController < ApplicationController
     @player_per_match = PlayerPerMatch.new(player_per_match_params)
 
     if @player_per_match.save
-      render json: @player_per_match, status: :created, location: @player_per_match
+      render json: @player_per_match, status: :created,
+             location: @player_per_match
     else
       render json: @player_per_match.errors, status: :unprocessable_entity
     end
@@ -39,13 +42,15 @@ class PlayerPerMatchesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_player_per_match
-      @player_per_match = PlayerPerMatch.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def player_per_match_params
-      params.require(:player_per_match).permit(:player_id, :match_id, :position, :status)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_player_per_match
+    @player_per_match = PlayerPerMatch.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def player_per_match_params
+    params.require(:player_per_match).permit(:player_id, :match_id, :position,
+                                             :status)
+  end
 end
