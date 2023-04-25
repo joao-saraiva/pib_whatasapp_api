@@ -23,6 +23,10 @@ class PlayerPerMatch < ApplicationRecord
         match.player_per_matches.avaliable.where("position > ?", position).update_all("position = position - 1")
       end
     end
+
+    event :confirm do 
+      transitions from: :waiting, to: :confirmed
+    end
   end
 
   def on_waiting_list?

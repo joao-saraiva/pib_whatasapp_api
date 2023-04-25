@@ -56,4 +56,15 @@ RSpec.describe PlayerPerMatch, type: :model do
       end
     end
   end
+
+  describe "#confirm!" do
+    it "should change status from waiting to confirmed" do 
+      player_per_match = FactoryBot.create(:player_per_match, :waiting)
+
+      expect(player_per_match.waiting?).to be(true)
+      player_per_match.confirm!
+
+      expect(player_per_match.confirmed?).to be(true)
+    end
+  end
 end 
