@@ -7,7 +7,7 @@ class Match < ApplicationRecord
 
   def next_available_position(player)
     if player.pib_priority?
-      last_pib_priority_registered = player_per_matches.joins(:player).where(player: {pib_priority: true}).last
+      last_pib_priority_registered = player_per_matches.avaliable.joins(:player).where(player: {pib_priority: true}).last
 
       if last_pib_priority_registered
         update_player_per_matches_positions
@@ -23,6 +23,6 @@ class Match < ApplicationRecord
   private 
 
   def update_player_per_matches_positions
-    player_per_matches.joins(:player).where(player: {pib_priority: [false, nil]}).update_all("position = position + 1")
+    player_per_matches.avaliable.joins(:player).where(player: {pib_priority: [false, nil]}).update_all("position = position + 1")
   end
 end
