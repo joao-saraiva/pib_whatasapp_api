@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreatePlayerPerMatches < ActiveRecord::Migration[7.0]
   def change
     create_table :player_per_matches do |t|

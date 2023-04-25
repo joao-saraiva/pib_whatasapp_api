@@ -1,6 +1,8 @@
-class Match < ApplicationRecord 
+# frozen_string_literal: true
+
+class Match < ApplicationRecord
   include AASM
-  has_many :player_per_matches
+  has_many :player_per_matches, dependent: :destroy
 
   validates :status, :date, presence: true
 
@@ -22,7 +24,7 @@ class Match < ApplicationRecord
 
   def next_available_position(player)
     if player.pib_priority?
-      last_pib_priority_registered = player_per_matches.avaliable.joins(:player).where(player: {pib_priority: true}).last
+      last_pib_priority_registered = player_per_matches.avaliable.pib_priority.last
 
       if last_pib_priority_registered
         update_player_per_matches_positions
@@ -36,14 +38,14 @@ class Match < ApplicationRecord
   end
 
   def print_list_of_players
-    return "Não existem jogadores confirmados." if player_per_matches.size == player_per_matches.not_confimed.size
+    return 'Não existem jogadores confirmados.' if player_per_matches.size == player_per_matches.not_confimed.size
 
-    "Lista de Confirmados\n#{player_per_matches.avaliable.order(:position).map(&:list_line).join("")}"
+    "Lista de Confirmados\n#{player_per_matches.avaliable.order(:position).map(&:list_line).join('')}"
   end
 
-  private 
+  private
 
   def update_player_per_matches_positions
-    player_per_matches.avaliable.joins(:player).where(player: {pib_priority: [false, nil]}).update_all("position = position + 1")
+    player_per_matches.avaliable.non_pib_priority.update_all('position = position + 1')
   end
 end
