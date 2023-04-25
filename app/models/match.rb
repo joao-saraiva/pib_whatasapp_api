@@ -20,6 +20,12 @@ class Match < ApplicationRecord
     end
   end
 
+  def print_list_of_players
+    return "Não existem jogadores confirmados." if player_per_matches.size == player_per_matches.not_confimed.size
+
+    "Lista de Confirmados\n#{player_per_matches.avaliable.map(&:list_line).join("")}"
+  end
+
   private 
 
   def update_player_per_matches_positions

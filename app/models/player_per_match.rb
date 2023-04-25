@@ -8,6 +8,8 @@ class PlayerPerMatch < ApplicationRecord
 
   before_create :set_position
 
+  delegate :name, to: :player
+  scope :not_confimed, -> { where.not(status: PlayerPerMatch.statuses[:confirmed])}
   scope :avaliable, -> { where(status: [PlayerPerMatch.statuses[:confirmed], PlayerPerMatch.statuses[:waiting]]) }
   enum status: { confirmed: 0, waiting: 1, gived_up: 2 }
 
@@ -31,6 +33,10 @@ class PlayerPerMatch < ApplicationRecord
 
   def on_waiting_list?
     position > 24
+  end
+
+  def list_line
+    "#{position} - #{name}\n"
   end
 
   private 
