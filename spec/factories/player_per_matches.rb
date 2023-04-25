@@ -9,5 +9,9 @@ FactoryBot.define do
     trait :pib_priority do 
       player_id { FactoryBot.create(:player, :pib_priority).id }
     end
+
+    trait :waiting do 
+      status { :waiting }
+    end
   end
 end
