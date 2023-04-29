@@ -2,6 +2,7 @@
 
 class PlayerPerMatchesController < ApplicationController
   before_action :set_player_per_match, only: %i[show update destroy]
+  wrap_parameters :player_per_match, include: [:player_id, :match_id, :position, :status, :player_number, :player_name]
 
   # GET /player_per_matches
   def index
@@ -17,14 +18,19 @@ class PlayerPerMatchesController < ApplicationController
 
   # POST /player_per_matches
   def create
-    @player_per_match = PlayerPerMatch.new(player_per_match_params)
+    already_confirmed = PlayerPerMatch.joins(:player).find_by(player: {number: params[:player_number]}, match_id: Match.open.last&.id).present?
 
-    if @player_per_match.save
-      render json: @player_per_match, status: :created,
-             location: @player_per_match
+    if already_confirmed
+      render plain: "Você já está inscrito"
     else
-      render json: @player_per_match.errors, status: :unprocessable_entity
+      @player_per_match = PlayerPerMatch.new(player_per_match_params)
+      if @player_per_match.save
+        render plain: @player_per_match.match.print_list_of_players 
+      else
+        render json: @player_per_match.errors, status: :unprocessable_entity
+      end
     end
+
   end
 
   # PATCH/PUT /player_per_matches/1
@@ -51,6 +57,6 @@ class PlayerPerMatchesController < ApplicationController
   # Only allow a list of trusted parameters through.
   def player_per_match_params
     params.require(:player_per_match).permit(:player_id, :match_id, :position,
-                                             :status)
+                                             :status, :player_number, :player_name)
   end
 end
