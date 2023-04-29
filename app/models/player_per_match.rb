@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class PlayerPerMatch < ApplicationRecord
+  attr_accessor :player_number, :player_name
   include AASM
 
   belongs_to :player
@@ -8,7 +9,8 @@ class PlayerPerMatch < ApplicationRecord
 
   validates :status, :position, presence: true
 
-  before_create :set_position
+  before_validation :set_match_and_player
+  before_validation :set_position
 
   delegate :name, to: :player
   scope :not_confimed, lambda {
@@ -53,5 +55,18 @@ class PlayerPerMatch < ApplicationRecord
 
   def set_position
     self.position = match.next_available_position(player)
+  end
+
+  def set_match_and_player
+    self.match_id = Match.open.last&.id
+    self.player_id = Player.find_by("number IS NOT NULL and number = ?", player_number)&.id
+    
+    if self.player_id.nil?
+      self.player_id = Player.create(number: player_number, name: player_name)&.id
+    end
+
+    if self.match_id.nil?
+      self.match_id = Match.create(status: :open, date: Date.today)&.id
+    end
   end
 end
