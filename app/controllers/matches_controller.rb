@@ -51,6 +51,16 @@ class MatchesController < ApplicationController
     end
   end
 
+  def print_list
+    match = Match.open.last
+
+    if match
+      render plain: match.print_list_of_players
+    else
+      render plain: "Não existe partida para visualizar a lista"
+    end
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.

@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   resources :matches do 
     collection do 
       patch 'cancel'
+      get 'print_list'
     end
   end
 end
