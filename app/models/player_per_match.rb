@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PlayerPerMatch < ApplicationRecord
-  attr_accessor :player_number, :player_name
+  attr_accessor :player_number, :player_name, :player_pib_priority
   include AASM
 
   belongs_to :player
@@ -9,8 +9,8 @@ class PlayerPerMatch < ApplicationRecord
 
   validates :status, :position, presence: true
 
-  before_validation :set_match_and_player
-  before_validation :set_position
+  before_validation :set_match_and_player, if: :new_record?
+  before_validation :set_position_and_status, if: :new_record?
 
   delegate :name, to: :player
   scope :not_confimed, lambda {
@@ -53,8 +53,9 @@ class PlayerPerMatch < ApplicationRecord
 
   private
 
-  def set_position
+  def set_position_and_status
     self.position = match.next_available_position(player)
+    self.status = self.position > 24 ? :waiting : :confirmed
   end
 
   def set_match_and_player
@@ -62,7 +63,7 @@ class PlayerPerMatch < ApplicationRecord
     self.player_id = Player.find_by("number IS NOT NULL and number = ?", player_number)&.id
     
     if self.player_id.nil?
-      self.player_id = Player.create(number: player_number, name: player_name)&.id
+      self.player_id = Player.create(number: player_number, name: player_name, pib_priority: player_pib_priority)&.id
     end
 
     if self.match_id.nil?

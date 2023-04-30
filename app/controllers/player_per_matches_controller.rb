@@ -2,7 +2,7 @@
 
 class PlayerPerMatchesController < ApplicationController
   before_action :set_player_per_match, only: %i[show update destroy]
-  wrap_parameters :player_per_match, include: [:player_id, :match_id, :position, :status, :player_number, :player_name]
+  wrap_parameters :player_per_match, include: [:player_id, :match_id, :position, :status, :player_number, :player_name, :player_pib_priority]
 
   # GET /player_per_matches
   def index
@@ -47,6 +47,18 @@ class PlayerPerMatchesController < ApplicationController
     @player_per_match.destroy
   end
 
+  def give_up
+    player_per_match = PlayerPerMatch.joins(:player).find_by(player: {number: params[:player_number]}, match_id: Match.open.last&.id)
+
+    if player_per_match && !player_per_match.gived_up?
+      player_per_match.give_up!
+      player_per_match.destroy
+      render plain: player_per_match.match.print_list_of_players
+    else
+      render plain: 'Não foi possivel desistir, você não está inscrito'
+    end
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
@@ -57,6 +69,6 @@ class PlayerPerMatchesController < ApplicationController
   # Only allow a list of trusted parameters through.
   def player_per_match_params
     params.require(:player_per_match).permit(:player_id, :match_id, :position,
-                                             :status, :player_number, :player_name)
+                                             :status, :player_number, :player_name, :player_pib_priority)
   end
 end
