@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_24_195941) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_30_141650) do
   create_table "matches", force: :cascade do |t|
     t.integer "status"
     t.date "date"
@@ -21,7 +21,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_24_195941) do
   create_table "player_per_matches", force: :cascade do |t|
     t.integer "player_id"
     t.integer "match_id"
-    t.integer "status"
     t.integer "position"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

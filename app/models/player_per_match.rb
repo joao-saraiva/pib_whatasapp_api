@@ -13,35 +13,9 @@ class PlayerPerMatch < ApplicationRecord
   before_validation :set_position_and_status, if: :new_record?
 
   delegate :name, to: :player
-  scope :not_confimed, lambda {
-                         where.not(status: PlayerPerMatch.statuses[:confirmed])
-                       }
-  scope :avaliable, lambda {
-                      where(status: [PlayerPerMatch.statuses[:confirmed], PlayerPerMatch.statuses[:waiting]])
-                    }
 
   scope :pib_priority, -> { joins(:player).where(player: { pib_priority: true }) }
   scope :non_pib_priority, -> { joins(:player).where(player: { pib_priority: [nil, false] }) }
-  enum status: { confirmed: 0, waiting: 1, gived_up: 2 }
-
-  aasm column: 'status', enum: true do
-    state :confirmed, initial: true
-    state :waiting
-    state :gived_up
-
-    event :give_up do
-      transitions from: %i[confirmed waiting], to: :gived_up
-
-      after do
-        match.player_per_matches.avaliable.where('position > ?',
-                                                 position).update_all('position = position - 1')
-      end
-    end
-
-    event :confirm do
-      transitions from: :waiting, to: :confirmed
-    end
-  end
 
   def on_waiting_list?
     position > 24
@@ -49,6 +23,11 @@ class PlayerPerMatch < ApplicationRecord
 
   def list_line
     "#{position} - #{name}\n"
+  end
+
+  def give_up!
+    match.player_per_matches.where('position > ?', position).update_all('position = position - 1')
+    destroy
   end
 
   private
