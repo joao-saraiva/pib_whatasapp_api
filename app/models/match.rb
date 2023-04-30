@@ -15,10 +15,6 @@ class Match < ApplicationRecord
 
     event :cancel do 
       transitions from: [:open, :closed], to: :cancelled
-
-      after do 
-        player_per_matches.destroy_all
-      end
     end
   end
 

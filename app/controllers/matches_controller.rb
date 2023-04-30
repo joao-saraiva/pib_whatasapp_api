@@ -40,6 +40,17 @@ class MatchesController < ApplicationController
     @match.destroy
   end
 
+  def cancel
+    match = Match.open.last
+
+    if match
+      match.cancel!
+      render plain: "Partida cancelada !"
+    else
+      render plain: "Não existe partida para cancelar"
+    end
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
