@@ -64,6 +64,8 @@ class PlayerPerMatch < ApplicationRecord
     
     if self.player_id.nil?
       self.player_id = Player.create(number: player_number, name: player_name, pib_priority: player_pib_priority)&.id
+    else
+      player.update_attribute(:pib_priority, player_pib_priority)
     end
 
     if self.match_id.nil?

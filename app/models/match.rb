@@ -21,9 +21,9 @@ class Match < ApplicationRecord
   def next_available_position(player)
     if player.pib_priority?
       last_pib_priority_registered = player_per_matches.avaliable.pib_priority.last
+      update_player_per_matches_positions
 
       if last_pib_priority_registered
-        update_player_per_matches_positions
         last_pib_priority_registered.position + 1
       else
         1
